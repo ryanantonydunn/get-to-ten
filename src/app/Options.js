@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+const Howdy = styled.div``;
+
 const Options = ({ options, setGameState, text }) => (
   <div>
     Options
@@ -14,6 +16,7 @@ const Options = ({ options, setGameState, text }) => (
     >
       Start Game
     </button>
+    <Howdy />
   </div>
 );
 

@@ -1,4 +1,9 @@
 const INITIAL_STATE = {
+  alert: {
+    active: false,
+    text: "",
+    callback: null
+  },
   options: {
     width: 10,
     height: 10,
@@ -27,6 +32,25 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         active: action.active
+      };
+    }
+    case "SET_ALERT": {
+      return {
+        ...state,
+        alert: {
+          active: true,
+          text: action.text,
+          callback: action.callback
+        }
+      };
+    }
+    case "CLOSE_ALERT": {
+      return {
+        ...state,
+        alert: {
+          ...state.alert,
+          active: false
+        }
       };
     }
     case "SET_OPTION": {

@@ -1,19 +1,31 @@
 import { Creators } from "./actions";
 
-const { setBoard, setPauseState, setGameState } = Creators;
+const { setPauseState, setGameState, setAlert, closeAlert } = Creators;
+
+const testAction = () => {
+  return dispatch => {
+    dispatch(
+      setAlert("are you sure?", () => {
+        dispatch(setAlert("balls"));
+      })
+    );
+  };
+};
 
 const touchBoard = (x, y) => {
   return dispatch => {
     dispatch(setPauseState(true));
-    let time = 1000;
-    dispatch(setBoard(["touched"]));
+    // dispatch(setBoard(["touched"]));
     setTimeout(() => {
       dispatch(setPauseState(false));
-    }, time);
+    }, 1000);
   };
 };
 
 export default {
   touchBoard,
-  setGameState
+  setGameState,
+  setAlert,
+  closeAlert,
+  testAction
 };

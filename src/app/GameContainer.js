@@ -14,6 +14,9 @@ const mapDispatchToProps = dispatch => {
     },
     setGameState: active => {
       dispatch(mainOperations.setGameState(active));
+    },
+    testAction: () => {
+      dispatch(mainOperations.testAction());
     }
   };
 };

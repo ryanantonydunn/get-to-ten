@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+import { default as Alert } from "./AlertContainer";
 import { default as Game } from "./GameContainer";
 import { default as Options } from "./OptionsContainer";
 
@@ -16,7 +17,12 @@ const Wrapper = styled.div`
 `;
 
 const App = ({ active }) => {
-  return <Wrapper>{active ? <Game /> : <Options />}</Wrapper>;
+  return (
+    <Wrapper>
+      <Alert />
+      {active ? <Game /> : <Options />}
+    </Wrapper>
+  );
 };
 
 export default App;
