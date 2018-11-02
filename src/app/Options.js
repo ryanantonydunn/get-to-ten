@@ -3,15 +3,15 @@ import styled from "styled-components";
 
 const Howdy = styled.div``;
 
-const Options = ({ options, setGameState, text }) => (
+const Options = ({ options, startNewGame, text }) => (
   <div>
-    Options
+    <h2>Options</h2>
     <br />
     {text}
     <br />
     <button
       onClick={() => {
-        setGameState(true);
+        startNewGame(options);
       }}
     >
       Start Game

@@ -1,5 +1,29 @@
+@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+
 body {
   margin: 0;
   padding: 0;
-  font-family: arial, sans-serif;
+  font-family: 'Press Start 2P', arial, sans-serif;
+  display: grid;
+  height: 100vh;
+  place-content: center;
+  background: #222;
+  color: #ddd;
+  text-align: center;
+}
+
+button {
+  font-family: 'Press Start 2P', arial, sans-serif;
+  white-space: nowrap;
+  text-transform: uppercase;
+  border: none;
+  height: 40px;
+  font-size: 14px;
+  line-height: 40px;
+  padding: 0 20px;
+}
+
+h2 {
+  font-size: 18px;
+  text-transform: uppercase;
 }

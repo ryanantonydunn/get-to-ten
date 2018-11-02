@@ -9,11 +9,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    setOption: option => {
-      dispatch(mainOperations.changeOption(option));
+    setOptions: option => {
+      dispatch(mainOperations.setOptions(option));
     },
-    setGameState: active => {
-      dispatch(mainOperations.setGameState(active));
+    startNewGame: options => {
+      dispatch(mainOperations.startNewGame(options));
     }
   };
 };

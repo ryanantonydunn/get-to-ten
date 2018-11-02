@@ -5,8 +5,8 @@ const INITIAL_STATE = {
     callback: null
   },
   options: {
-    width: 10,
-    height: 10,
+    cols: 10,
+    rows: 10,
     max: 9
   },
   active: false,
@@ -14,46 +14,29 @@ const INITIAL_STATE = {
   board: []
 };
 
-export default (state = INITIAL_STATE, action) => {
+const reducers = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case "START_GAME": {
+      return {
+        ...state,
+        board: [...action.board],
+        active: true
+      };
+    }
     case "SET_BOARD": {
       return {
         ...state,
-        board: [...action.board]
+        board: [...action.board],
+        pause: true
       };
     }
-    case "SET_PAUSE_STATE": {
+    case "UN_PAUSE_GAME": {
       return {
         ...state,
-        pause: action.pause
+        pause: false
       };
     }
-    case "SET_GAME_STATE": {
-      return {
-        ...state,
-        active: action.active
-      };
-    }
-    case "SET_ALERT": {
-      return {
-        ...state,
-        alert: {
-          active: true,
-          text: action.text,
-          callback: action.callback
-        }
-      };
-    }
-    case "CLOSE_ALERT": {
-      return {
-        ...state,
-        alert: {
-          ...state.alert,
-          active: false
-        }
-      };
-    }
-    case "SET_OPTION": {
+    case "SET_OPTIONS": {
       const { option } = action;
       return {
         ...state,
@@ -67,3 +50,5 @@ export default (state = INITIAL_STATE, action) => {
       return state;
   }
 };
+
+export default reducers;

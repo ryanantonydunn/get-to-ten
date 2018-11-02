@@ -3,20 +3,16 @@ import Game from "./Game";
 import { mainOperations } from "./duck";
 
 const mapStateToProps = state => {
-  const { pause, board } = state.main;
-  return { pause, board };
+  const { board, options } = state.main;
+  const { rows } = options;
+  console.log(state);
+  return { board, rows, pause: false };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    touchBoard: (x, y) => {
-      dispatch(mainOperations.touchBoard(x, y));
-    },
-    setGameState: active => {
-      dispatch(mainOperations.setGameState(active));
-    },
-    testAction: () => {
-      dispatch(mainOperations.testAction());
+    touchBoard: (x, y, board, rows) => {
+      dispatch(mainOperations.touchBoard(x, y, board, rows));
     }
   };
 };

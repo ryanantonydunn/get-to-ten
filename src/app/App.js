@@ -1,28 +1,31 @@
 import React from "react";
 import styled from "styled-components";
 
-import { default as Alert } from "./AlertContainer";
 import { default as Game } from "./GameContainer";
 import { default as Options } from "./OptionsContainer";
 
 const Wrapper = styled.div`
+  --block: 4px;
+  box-sizing: border-box;
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: #222239;
-  text-align: center;
-  color: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+  max-height: 700px;
+  background: #111;
+  border: var(--block) solid #2c2c2c;
+  * {
+    user-select: none;
+  }
 `;
 
 const App = ({ active }) => {
-  return (
-    <Wrapper>
-      <Alert />
-      {active ? <Game /> : <Options />}
-    </Wrapper>
-  );
+  return <Wrapper>{active ? <Game /> : <Options />}</Wrapper>;
 };
 
 export default App;
