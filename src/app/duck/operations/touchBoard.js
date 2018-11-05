@@ -1,12 +1,12 @@
 import { Creators } from "../actions";
+const Random = require("random-js")();
 
-const { setBoard, unPauseGame } = Creators;
-
-const ANIM_TIME = 400;
+const { setBoard } = Creators;
 
 // player has touched the board
-const touchBoard = (x, y, board, rows) => {
+const touchBoard = (x, y, board, options) => {
   return dispatch => {
+    const { max, rows } = options;
     const value = board[x][y].value;
     if (value < 1) {
       return;
@@ -14,6 +14,7 @@ const touchBoard = (x, y, board, rows) => {
 
     // map out effects of the move
     const checkedCells = { [x + "-" + y]: true };
+    const removeCells = [];
     const removeCellWaves = [];
     let success = false;
     const checkAdjacentCells = (x, y, depth) => {
@@ -29,6 +30,7 @@ const touchBoard = (x, y, board, rows) => {
             removeCellWaves[depth] = [];
           }
           removeCellWaves[depth].push({ x, y });
+          removeCells.push({ x, y });
           newCells.push({ x, y });
           success = true;
         }
@@ -86,20 +88,35 @@ const touchBoard = (x, y, board, rows) => {
         });
         dispatch(setBoard(changingBoard));
       }, wait);
-
-      // actually remove the cells
-      setTimeout(() => {
-        wave.forEach(cell => {
-          changingBoard[cell.x].splice(cell.y, 1);
-        });
-        dispatch(setBoard(changingBoard));
-      }, wait + ANIM_TIME);
     });
 
-    // unpause the gameplay
-    const pauseTime = removeCellWaves.length * 100 + ANIM_TIME + 200;
+    // complete the move
+    const pauseTime = removeCellWaves.length * 100 + 100;
     setTimeout(() => {
-      dispatch(unPauseGame());
+      const newBoard = [...board];
+
+      // remove the cells
+      const sortedCells = removeCells.sort(function(a, b) {
+        return b.y - a.y;
+      });
+      sortedCells.forEach(coords => {
+        newBoard[coords.x].splice(coords.y, 1);
+      });
+
+      // add new cells
+      newBoard.forEach((col, x) => {
+        if (col.length < rows) {
+          if (Random.integer(0, 1)) {
+            newBoard[x].unshift({
+              value: Random.integer(Math.max(0, max - 2), max),
+              removing: false,
+              adding: true
+            });
+          }
+        }
+      });
+
+      dispatch(setBoard(newBoard));
     }, pauseTime);
   };
 };

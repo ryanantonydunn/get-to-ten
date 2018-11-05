@@ -10,7 +10,6 @@ const INITIAL_STATE = {
     max: 9
   },
   active: false,
-  pause: false,
   board: []
 };
 
@@ -26,14 +25,7 @@ const reducers = (state = INITIAL_STATE, action) => {
     case "SET_BOARD": {
       return {
         ...state,
-        board: [...action.board],
-        pause: true
-      };
-    }
-    case "UN_PAUSE_GAME": {
-      return {
-        ...state,
-        pause: false
+        board: [...action.board]
       };
     }
     case "SET_OPTIONS": {

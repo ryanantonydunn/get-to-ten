@@ -23,6 +23,15 @@ const collapse = keyframes`
   }
 `;
 
+const adding = keyframes`
+  from {
+    transform: translateY(-1000%);
+  }
+  to {
+    transform: translateY(0);
+  }
+`;
+
 const Board = styled.div`
   position: absolute;
   bottom: var(--block);
@@ -62,7 +71,10 @@ const Cell = styled.div`
     calc(100% - var(--block)) calc(100% - var(--block) * 3);
   background-position: var(--block) 0, 0 var(--block);
   &.removing {
-    animation: ${collapse} 0.15s linear forwards;
+    animation: ${collapse} 0.2s ease-in forwards;
+  }
+  &.adding {
+    animation: ${adding} 1s ease-in forwards;
   }
   @media (max-width: 768px) {
     font-size: 14px;
@@ -77,17 +89,52 @@ const Cell = styled.div`
   }
 `;
 
-const Game = ({ board, rows, pause, touchBoard }) => (
-  <Board rows={rows}>
+const Debug = styled.div`
+  position: absolute;
+  display: flex;
+  font-family: arial;
+  font-size: 12px;
+  top: 0;
+  left: 0;
+  background: #000;
+  border: 1px solid #ccc;
+`;
+
+const DebugCol = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 14px;
+  div {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #999;
+  }
+`;
+
+const Game = ({ board, options, pause, touchBoard }) => (
+  <Board rows={options.rows}>
+    <Debug>
+      {board.map((col, x) => (
+        <DebugCol key={x + "debugcol"}>
+          {col.map((cell, y) => (
+            <div key={x + y + "debug"}>{cell.value}</div>
+          ))}
+        </DebugCol>
+      ))}
+    </Debug>
     {board.map((col, x) => (
       <Col key={x + "-col"}>
         {col.map((cell, y) => (
           <Cell
             key={x + "-" + y + "-cell"}
             value={cell.value}
-            className={cell.removing ? "removing" : ""}
+            className={cell.removing ? "removing" : cell.adding ? "adding" : ""}
             onClick={() => {
-              touchBoard(x, y, board, rows);
+              if (!pause) {
+                touchBoard(x, y, board, options);
+              }
             }}
           >
             {cell.removing ? null : cell.value}
