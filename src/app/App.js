@@ -15,8 +15,8 @@ const Wrapper = styled.div`
   place-content: center;
   width: 100%;
   height: 100%;
-  max-width: 1000px;
-  max-height: 700px;
+  max-width: 600px;
+  max-height: 600px;
   background: #111;
   border: var(--block) solid #2c2c2c;
   * {

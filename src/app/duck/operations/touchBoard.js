@@ -4,21 +4,16 @@ const Random = require("random-js")();
 const { setBoard } = Creators;
 
 // player has touched the board
-const touchBoard = (x, y, board, options) => {
+const touchBoard = (x, y, board) => {
   return dispatch => {
-    const { max, rows } = options;
     const value = board[x][y].value;
-    if (value < 1) {
-      return;
-    }
-
-    // map out effects of the move
     const checkedCells = { [x + "-" + y]: true };
-    const removeCells = [];
-    const removeCellWaves = [];
+    const removeCells = {};
     let success = false;
-    const checkAdjacentCells = (x, y, depth) => {
-      const newCells = [];
+
+    // check the adjacent cells to a cell
+    const checkAdjacentCells = (x, y) => {
+      const newCellsInThisDepth = [];
       const cellMatch = (x, y) => {
         const key = x + "-" + y;
         if (checkedCells[key]) {
@@ -26,98 +21,53 @@ const touchBoard = (x, y, board, options) => {
         }
         checkedCells[key] = true;
         if (board[x] && board[x][y] && board[x][y].value === value) {
-          if (!removeCellWaves[depth]) {
-            removeCellWaves[depth] = [];
-          }
-          removeCellWaves[depth].push({ x, y });
-          removeCells.push({ x, y });
-          newCells.push({ x, y });
+          newCellsInThisDepth.push({ x, y });
+          removeCells[key] = true;
           success = true;
         }
       };
-
-      // check up and down cells
-      cellMatch(x, y - 1);
+      cellMatch(x + 1, y);
+      cellMatch(x - 1, y);
       cellMatch(x, y + 1);
-
-      // check left and right cells
-      const offsetMiddleY = rows - board[x].length;
-      if (board[x - 1]) {
-        const offsetLeftY = rows - board[x - 1].length;
-        cellMatch(x - 1, y + offsetMiddleY - offsetLeftY);
-      }
-      if (board[x + 1]) {
-        const offsetRightY = rows - board[x + 1].length;
-        cellMatch(x + 1, y + offsetMiddleY - offsetRightY);
-      }
+      cellMatch(x, y - 1);
 
       // recurse the function until there are no more matches
-      newCells.forEach(coords => {
-        checkAdjacentCells(coords.x, coords.y, depth + 1);
+      newCellsInThisDepth.forEach(cell => {
+        checkAdjacentCells(cell.x, cell.y);
       });
     };
-    checkAdjacentCells(x, y, 0);
+    checkAdjacentCells(x, y);
 
     // are we not doing any work
     if (!success) {
       return;
     }
 
-    // decrease the value of the cell
-    const changingBoard = [...board];
-    changingBoard[x][y].value -= 1;
-    dispatch(setBoard(changingBoard));
-
-    // set the waves
-    removeCellWaves.forEach((wave, i) => {
-      const wait = i * 100 + 20;
-      const changingBoard = [...board];
-
-      // sort wave
-      const sortedWave = wave.sort(function(a, b) {
-        return b.y - a.y;
-      });
-
-      // start the animations
-      setTimeout(() => {
-        sortedWave.forEach(cell => {
-          changingBoard[cell.x][cell.y] = {
-            ...board[cell.x][cell.y],
-            removing: true
-          };
-        });
-        dispatch(setBoard(changingBoard));
-      }, wait);
+    // prep the new board with offsets on new cells
+    const newBoard = JSON.parse(JSON.stringify(board));
+    let maxOffset = 0;
+    newBoard[x][y].value += 1;
+    newBoard.forEach((col, x) => {
+      const newCol = [...col];
+      let offset = 0;
+      for (let y = col.length - 1; y >= 0; y--) {
+        newCol.yOffset = 0;
+        if (removeCells[x + "-" + y]) {
+          newCol.splice(y, 1);
+          offset++;
+        } else {
+          newCol[y].yOffset = offset;
+        }
+      }
+      maxOffset = Math.max(offset, maxOffset);
+      for (let i = 0; i < offset; i++) {
+        newCol.unshift({ value: Random.integer(1, 3), yOffset: offset });
+      }
+      newBoard[x] = newCol;
     });
 
-    // complete the move
-    const pauseTime = removeCellWaves.length * 100 + 100;
-    setTimeout(() => {
-      const newBoard = [...board];
-
-      // remove the cells
-      const sortedCells = removeCells.sort(function(a, b) {
-        return b.y - a.y;
-      });
-      sortedCells.forEach(coords => {
-        newBoard[coords.x].splice(coords.y, 1);
-      });
-
-      // add new cells
-      newBoard.forEach((col, x) => {
-        if (col.length < rows) {
-          if (Random.integer(0, 1)) {
-            newBoard[x].unshift({
-              value: Random.integer(Math.max(0, max - 2), max),
-              removing: false,
-              adding: true
-            });
-          }
-        }
-      });
-
-      dispatch(setBoard(newBoard));
-    }, pauseTime);
+    // dispatch the new boards
+    dispatch(setBoard(newBoard));
   };
 };
 

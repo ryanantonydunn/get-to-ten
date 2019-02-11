@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.11.0",
     "random-js": "^1.0.8",
-    "react": "^16.5.2",
+    "react": "^16.8.1",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",

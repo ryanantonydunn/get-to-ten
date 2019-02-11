@@ -5,9 +5,7 @@ const INITIAL_STATE = {
     callback: null
   },
   options: {
-    cols: 10,
-    rows: 10,
-    max: 9
+    size: 6
   },
   active: false,
   board: []

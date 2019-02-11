@@ -4,8 +4,7 @@ import { mainOperations } from "./duck";
 
 const mapStateToProps = state => {
   const { board, options } = state.main;
-  const pause = !!board.find(col => col.find(cell => cell.removing));
-  return { board, options, pause };
+  return { board, options };
 };
 
 const mapDispatchToProps = dispatch => {

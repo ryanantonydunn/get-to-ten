@@ -5,15 +5,14 @@ const { startGame } = Creators;
 
 const startNewGame = options => {
   return dispatch => {
-    const { max, rows, cols } = options;
+    const { size } = options;
     const board = [];
-    for (let x = 0; x < cols; x++) {
+    for (let x = 0; x < size; x++) {
       board[x] = [];
-      for (let y = 0; y < Random.integer(Math.max(0, rows - 5), rows); y++) {
+      for (let y = 0; y < size; y++) {
         board[x].push({
-          value: Random.integer(Math.max(0, max - 2), max),
-          removing: false,
-          adding: false
+          yOffset: 0,
+          value: Random.integer(1, 3)
         });
       }
     }
