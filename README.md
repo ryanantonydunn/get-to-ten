@@ -1,5 +1,5 @@
-# Tiles Game
+# Make number on tile go big
 
-Small simple game built to try out a basic app with a front end boilerplate.
+Make the tile number bigger by tapping same tiles that are adjacent.
 
-Two or more adjacent tiles can be tapped to increase the number.
+Game made with JS, React and Cordova.
