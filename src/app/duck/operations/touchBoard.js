@@ -1,15 +1,18 @@
 import { Creators } from "../actions";
+import { isGameOver } from "../../../helpers";
 const Random = require("random-js")();
 
 const { setBoard } = Creators;
 
 // player has touched the board
-const touchBoard = (x, y, board) => {
+const touchBoard = (x, y, board, size, score, topScore) => {
   return dispatch => {
+    const max = size < 4 ? 2 : size > 5 ? 4 : 3;
     const value = board[x][y].value;
     const checkedCells = { [x + "-" + y]: true };
     const removeCells = {};
     let success = false;
+    let scoreAdd = 2;
 
     // check the adjacent cells to a cell
     const checkAdjacentCells = (x, y) => {
@@ -24,6 +27,7 @@ const touchBoard = (x, y, board) => {
           newCellsInThisDepth.push({ x, y });
           removeCells[key] = true;
           success = true;
+          scoreAdd++;
         }
       };
       cellMatch(x + 1, y);
@@ -61,13 +65,30 @@ const touchBoard = (x, y, board) => {
       }
       maxOffset = Math.max(offset, maxOffset);
       for (let i = 0; i < offset; i++) {
-        newCol.unshift({ value: Random.integer(1, 3), yOffset: offset });
+        newCol.unshift({ value: Random.integer(1, max), yOffset: offset });
       }
       newBoard[x] = newCol;
     });
 
-    // dispatch the new boards
-    dispatch(setBoard(newBoard));
+    // are we game overed
+    let gameOver = isGameOver(newBoard);
+
+    // set score
+    const newScore =
+      parseInt(score) +
+      Math.ceil(Math.pow(scoreAdd * 0.5, newBoard[x][y].value) * 0.5);
+    const newTopScore = Math.max(newScore, topScore);
+    localStorage.setItem("score-" + size, gameOver ? 0 : newScore);
+    localStorage.setItem("topScore-" + size, newTopScore);
+
+    // save board
+    const saveBoard = newBoard.map(col => {
+      return col.map(cell => cell.value);
+    });
+    localStorage.setItem("board-" + size, JSON.stringify(saveBoard));
+
+    // dispatch the new board
+    dispatch(setBoard(newBoard, newScore, newTopScore, gameOver));
   };
 };
 

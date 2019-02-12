@@ -1,14 +1,13 @@
+import { getStoredData } from "../../helpers";
+
+const size = localStorage.getItem("size") || 4;
+const data = getStoredData(size);
+
 const INITIAL_STATE = {
-  alert: {
-    active: false,
-    text: "",
-    callback: null
-  },
-  options: {
-    size: 6
-  },
+  size,
   active: false,
-  board: []
+  gameOver: false,
+  ...data
 };
 
 const reducers = (state = INITIAL_STATE, action) => {
@@ -16,24 +15,40 @@ const reducers = (state = INITIAL_STATE, action) => {
     case "START_GAME": {
       return {
         ...state,
-        board: [...action.board],
         active: true
+      };
+    }
+    case "NEW_GAME": {
+      return {
+        ...state,
+        board: action.board,
+        score: 0,
+        active: true,
+        gameOver: false
+      };
+    }
+    case "OPEN_SETTINGS": {
+      return {
+        ...state,
+        active: false
       };
     }
     case "SET_BOARD": {
       return {
         ...state,
-        board: [...action.board]
+        board: [...action.board],
+        score: action.score,
+        topScore: action.topScore,
+        gameOver: action.gameOver
       };
     }
-    case "SET_OPTIONS": {
-      const { option } = action;
+    case "SET_SIZE": {
       return {
         ...state,
-        options: {
-          ...state.options,
-          ...option
-        }
+        board: [...action.board],
+        score: action.score,
+        topScore: action.topScore,
+        size: action.size
       };
     }
     default:

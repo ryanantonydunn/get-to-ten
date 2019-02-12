@@ -1,11 +1,14 @@
 import { Creators } from "../actions";
-import startNewGame from "./startNewGame";
 import touchBoard from "./touchBoard";
+import changeSize from "./changeSize";
+import startNewGame from "./startNewGame";
 
-const { setOptions } = Creators;
+const { startGame, openSettings } = Creators;
 
 export default {
   touchBoard,
+  changeSize,
   startNewGame,
-  setOptions
+  startGame,
+  openSettings
 };

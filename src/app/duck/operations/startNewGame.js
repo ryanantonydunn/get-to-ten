@@ -1,23 +1,15 @@
 import { Creators } from "../actions";
-const Random = require("random-js")();
+import { newBoard } from "../../../helpers";
+const { newGame } = Creators;
 
-const { startGame } = Creators;
-
-const startNewGame = options => {
+export default size => {
   return dispatch => {
-    const { size } = options;
-    const board = [];
-    for (let x = 0; x < size; x++) {
-      board[x] = [];
-      for (let y = 0; y < size; y++) {
-        board[x].push({
-          yOffset: 0,
-          value: Random.integer(1, 3)
-        });
-      }
-    }
-    dispatch(startGame(board));
+    const board = newBoard(size);
+    const saveBoard = board.map(col => {
+      return col.map(cell => cell.value);
+    });
+    localStorage.setItem("board-" + size, JSON.stringify(saveBoard));
+    localStorage.setItem("score-" + size, 0);
+    dispatch(newGame(board));
   };
 };
-
-export default startNewGame;
