@@ -29,7 +29,7 @@ const Bg = styled.div`
 
 const Title = styled.div`
   font-size: 16px;
-  padding: 40px 0 30px;
+  padding: 20px 0 20px;
   color: #fff;
   text-shadow: 0 3px 0 #000;
 `;
@@ -207,10 +207,10 @@ class App extends Component {
       const { setBoard, size, board } = this.props;
       const newBoard = board.map(col => {
         return col.map((cell, y) => {
-          let { yOffset } = cell;
-          yOffset = yOffset > size - y - 1 ? (yOffset -= 0.2) : yOffset;
-          yOffset = Math.max(size - y - 1, yOffset);
-          return { ...cell, yOffset };
+          return {
+            ...cell,
+            yOffset: Math.max(size - y - 1, cell.yOffset - 0.2)
+          };
         });
       });
       setBoard(newBoard);
@@ -233,7 +233,7 @@ class App extends Component {
     } = this.props;
     return (
       <Wrapper>
-        <Title>Make tile number go big!</Title>
+        <Title>big tile number</Title>
         <Buttons>
           <div onClick={openSettings}>
             <Bg col="#444" />

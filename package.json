@@ -1,7 +1,8 @@
 {
-  "name": "Make tile number go big",
+  "name": "make-tile-number-go-big",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "node-sass": "^4.11.0",
     "random-js": "^1.0.8",
@@ -15,25 +16,36 @@
     "reduxsauce": "^1.0.0"
   },
   "scripts": {
+    "build:cordova": "npm run build && mkdir -p ./www && rm -r ./www/* && cp -a ./build/. ./www/",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "move": "mv build www || move build www",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-react": "^7.11.1",
     "prettier": "^1.14.3",
     "styled-components": "^3.4.10"
-  }
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {}
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
