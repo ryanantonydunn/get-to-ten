@@ -2,7 +2,7 @@ import { Creators } from "../actions";
 import { isGameOver } from "../../../helpers";
 const Random = require("random-js")();
 
-const { setBoard } = Creators;
+const { touchAction } = Creators;
 
 // player has touched the board
 const touchBoard = (x, y, board, size, score, topScore) => {
@@ -49,23 +49,20 @@ const touchBoard = (x, y, board, size, score, topScore) => {
 
     // prep the new board with offsets on new cells
     const newBoard = JSON.parse(JSON.stringify(board));
-    let maxOffset = 0;
     newBoard[x][y].value += 1;
     newBoard.forEach((col, x) => {
       const newCol = [...col];
-      let offset = 0;
+      let newCells = 0;
       for (let y = col.length - 1; y >= 0; y--) {
-        newCol.yOffset = 0;
         if (removeCells[x + "-" + y]) {
           newCol.splice(y, 1);
-          offset++;
-        } else {
-          newCol[y].yOffset = offset;
+          newCells++;
         }
       }
-      maxOffset = Math.max(offset, maxOffset);
-      for (let i = 0; i < offset; i++) {
-        newCol.unshift({ value: Random.integer(1, max), yOffset: offset });
+      for (let i = 0; i < newCells; i++) {
+        let yOffset = newCol[0] ? newCol[0].yOffset + 1 : 0;
+        yOffset = Math.max(yOffset, size);
+        newCol.unshift({ value: Random.integer(1, max), yOffset });
       }
       newBoard[x] = newCol;
     });
@@ -74,9 +71,7 @@ const touchBoard = (x, y, board, size, score, topScore) => {
     let gameOver = isGameOver(newBoard);
 
     // set score
-    const newScore =
-      parseInt(score) +
-      Math.ceil(Math.pow(scoreAdd * 0.5, newBoard[x][y].value) * 0.5);
+    const newScore = parseInt(score) + scoreAdd * newBoard[x][y].value;
     const newTopScore = Math.max(newScore, topScore);
     localStorage.setItem("score-" + size, gameOver ? 0 : newScore);
     localStorage.setItem("topScore-" + size, newTopScore);
@@ -88,7 +83,7 @@ const touchBoard = (x, y, board, size, score, topScore) => {
     localStorage.setItem("board-" + size, JSON.stringify(saveBoard));
 
     // dispatch the new board
-    dispatch(setBoard(newBoard, newScore, newTopScore, gameOver));
+    dispatch(touchAction(newBoard, newScore, newTopScore, gameOver));
   };
 };
 

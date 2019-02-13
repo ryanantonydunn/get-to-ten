@@ -6,8 +6,8 @@ export default size => {
   if (storedBoard) {
     storedBoard = JSON.parse(storedBoard);
     board = storedBoard.map(col => {
-      return col.map(value => {
-        return { yOffset: 0, value };
+      return col.map((value, y) => {
+        return { yOffset: size - y - 1, value };
       });
     });
   } else {

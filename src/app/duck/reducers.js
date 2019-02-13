@@ -36,6 +36,12 @@ const reducers = (state = INITIAL_STATE, action) => {
     case "SET_BOARD": {
       return {
         ...state,
+        board: [...action.board]
+      };
+    }
+    case "TOUCH_ACTION": {
+      return {
+        ...state,
         board: [...action.board],
         score: action.score,
         topScore: action.topScore,

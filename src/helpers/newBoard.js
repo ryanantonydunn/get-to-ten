@@ -8,7 +8,7 @@ const newBoard = size => {
     board[x] = [];
     for (let y = 0; y < size; y++) {
       board[x].push({
-        yOffset: 0,
+        yOffset: size - y - 1,
         value: Random.integer(1, max)
       });
     }

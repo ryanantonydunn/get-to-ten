@@ -1,10 +1,11 @@
-import React from "react";
+import React, { Component } from "react";
 import styled, { keyframes } from "styled-components";
 
 const Wrapper = styled.div`
   --block: 4px;
   position: relative;
   max-width: 450px;
+  padding: 0 10px;
   margin: 0 auto;
   text-transform: uppercase;
 `;
@@ -12,11 +13,12 @@ const Wrapper = styled.div`
 const Bg = styled.div`
   --col: ${props => props.col};
   position: absolute;
+  opacity: ${props => props.opacity || 1};
   z-index: -1;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: ${props => props.offset || 0};
+  left: ${props => props.offset || 0};
+  right: ${props => props.offset || 0};
+  bottom: ${props => props.offset || 0};
   background-image: linear-gradient(var(--col), var(--col)),
     linear-gradient(var(--col), var(--col));
   background-repeat: no-repeat;
@@ -26,9 +28,10 @@ const Bg = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   padding: 40px 0 30px;
   color: #fff;
+  text-shadow: 0 3px 0 #000;
 `;
 
 const Scores = styled.div`
@@ -78,13 +81,6 @@ const cols = [
   "#EEEEEE"
 ];
 
-// eslint-disable-next-line
-const dropIn = keyframes`
-  to {
-    transform: translateY(0);
-  }
-`;
-
 const Board = styled.div`
   position: relative;
   height: 0;
@@ -94,36 +90,34 @@ const Board = styled.div`
 `;
 
 const BoardInner = styled.div`
+  --size: ${props => props.size}
   position: absolute;
-  top: 16px;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  display: flex;
-  margin: 0 -8px;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  font-size: ${props => props.fontSize};
 `;
 
 const Col = styled.div`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  margin: -8px 4px;
+  position: absolute;
+  width: var(--size);
+  left: ${props => props.left};
+  top: 0;
+  bottom: 0;
 `;
 
 const Cell = styled.div`
-  position: relative;
+  position: absolute;
   cursor: pointer;
-  margin: 4px 0;
-  flex-grow: 1;
   display: grid;
   place-content: center;
-  &.dropping {
-    transform: translateY(calc(-100% * ${props => props.yOffset}));
-    animation: ${dropIn} ${props => props.yOffset * 0.15 + "s"} linear forwards;
-  }
-  font-size: 16px;
-  @media (max-width: 768px) {
-    font-size: 12px;
+  height: var(--size);
+  left: 0;
+  right: 0;
+  font-size: 1em;
+  @media (max-width: 340px) {
+    font-size: 0.7em;
   }
   color: #000;
 `;
@@ -140,11 +134,11 @@ const fadeIn = keyframes`
 
 const Options = styled.div`
   position: absolute;
-  top: 8px;
-  left: 8px;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(0, 0, 0, 0.8);
+  z-index: 5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   display: grid;
   place-content: center;
   font-size: 18px;
@@ -202,111 +196,147 @@ const Large = styled.div`
   margin-bottom: 20px;
 `;
 
-const App = ({
-  size,
-  board,
-  score,
-  topScore,
-  active,
-  gameOver,
-  touchBoard,
-  changeSize,
-  startGame,
-  startNewGame,
-  openSettings
-}) => {
-  return (
-    <Wrapper>
-      <Title>Make big number on tile!</Title>
-      <Buttons>
-        <div onClick={openSettings}>
-          <Bg col="#444" />
-          Options
-        </div>
-        <div
-          onClick={() => {
-            startNewGame(size);
-          }}
-        >
-          <Bg col="#444" />
-          New Game
-        </div>
-      </Buttons>
-      <Board>
-        <Bg col="#000" />
-        <BoardInner>
-          {board.map((col, x) => (
-            <Col key={"col" + x}>
-              {col.map((cell, y) => (
-                <Cell
-                  key={x + "-" + y}
-                  className={cell.yOffset ? "dropping" : ""}
-                  yOffset={cell.yOffset}
+let interval;
+
+class App extends Component {
+  //
+  // animate the dropping tiles
+  componentDidMount() {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      const { setBoard, size, board } = this.props;
+      const newBoard = board.map(col => {
+        return col.map((cell, y) => {
+          let { yOffset } = cell;
+          yOffset = yOffset > size - y - 1 ? (yOffset -= 0.2) : yOffset;
+          yOffset = Math.max(size - y - 1, yOffset);
+          return { ...cell, yOffset };
+        });
+      });
+      setBoard(newBoard);
+    }, 1000 / 30);
+  }
+
+  render() {
+    const {
+      size,
+      board,
+      score,
+      topScore,
+      active,
+      gameOver,
+      touchBoard,
+      changeSize,
+      startGame,
+      startNewGame,
+      openSettings
+    } = this.props;
+    return (
+      <Wrapper>
+        <Title>Make tile number go big!</Title>
+        <Buttons>
+          <div onClick={openSettings}>
+            <Bg col="#444" />
+            Options
+          </div>
+          <div
+            onClick={() => {
+              startNewGame(size);
+            }}
+          >
+            <Bg col="#444" />
+            New Game
+          </div>
+        </Buttons>
+        <Board>
+          <Bg col="#000" />
+          <BoardInner
+            size={100 / size + "%"}
+            fontSize={size < 4 ? "22px" : size < 6 ? "18px" : "14px"}
+          >
+            {board.map((col, x) => (
+              <Col
+                key={"col" + x}
+                left={"calc(((100% / " + size + ")) * " + x + ")"}
+              >
+                {col.map((cell, y) => (
+                  <Cell
+                    key={x + "-" + y}
+                    style={{
+                      bottom:
+                        "calc(((100% / " + size + ")) * " + cell.yOffset + ")"
+                    }}
+                    onClick={() => {
+                      if (active && !gameOver) {
+                        touchBoard(x, y, board, size, score, topScore);
+                      }
+                    }}
+                  >
+                    <Bg
+                      offset={size > 5 ? "2px" : "4px"}
+                      col={cols[Math.min(cell.value, cols.length - 1)]}
+                    />
+                    {cell.value}
+                  </Cell>
+                ))}
+              </Col>
+            ))}
+          </BoardInner>
+          {gameOver && active ? (
+            <Options className="fade">
+              <Bg col="#000" opacity="0.8" />
+              <div>
+                Game Over
+                <BigButton
                   onClick={() => {
-                    if (active && !gameOver) {
-                      touchBoard(x, y, board, size, score, topScore);
-                    }
+                    startNewGame(size);
                   }}
                 >
-                  <Bg col={cols[Math.min(cell.value, cols.length - 1)]} />
-                  {cell.value}
-                </Cell>
-              ))}
-            </Col>
-          ))}
-        </BoardInner>
-        {gameOver && active ? (
-          <Options className="fade">
-            <div>
-              Game Over
-              <BigButton
+                  <Bg col="#eee" /> Try Again
+                </BigButton>
+              </div>
+            </Options>
+          ) : null}
+          {!active ? (
+            <Options>
+              <Bg col="#000" opacity="0.8" />
+              <Arrow
+                className="left"
                 onClick={() => {
-                  startNewGame(size);
+                  changeSize(size <= 3 ? 6 : size - 1);
                 }}
-              >
-                <Bg col="#eee" /> Try Again
-              </BigButton>
-            </div>
-          </Options>
-        ) : null}
-        {!active ? (
-          <Options>
-            <Arrow
-              className="left"
-              onClick={() => {
-                changeSize(size <= 3 ? 6 : size - 1);
-              }}
-            />
-            <Arrow
-              className="right"
-              onClick={() => {
-                changeSize(size >= 6 ? 3 : size + 1);
-              }}
-            />
-            <div>
-              {gameOver ? <Large>Game Over</Large> : null}
-              {size} <span>x</span> {size}
-              <BigButton onClick={startGame}>
-                <Bg col="#eee" /> {gameOver ? "Try Again" : "Play"}
-              </BigButton>
-            </div>
-          </Options>
-        ) : null}
-      </Board>
-      <Scores>
-        <div>
-          <Bg col="#262626" />
-          <span>Best</span>
-          {topScore}
-        </div>
-        <div>
-          <Bg col="#262626" />
-          <span>Score</span>
-          {score}
-        </div>
-      </Scores>
-    </Wrapper>
-  );
-};
+              />
+              <Arrow
+                className="right"
+                onClick={() => {
+                  changeSize(size >= 6 ? 3 : size + 1);
+                }}
+              />
+              <div>
+                {gameOver ? <Large>Game Over</Large> : null}
+                {size} <span>x</span> {size}
+                <BigButton onClick={startGame}>
+                  <Bg col="#eee" /> {gameOver ? "Try Again" : "Play"}
+                </BigButton>
+              </div>
+            </Options>
+          ) : null}
+        </Board>
+        <Scores>
+          <div>
+            <Bg col="#262626" />
+            <span>Best</span>
+            {topScore}
+          </div>
+          <div>
+            <Bg col="#262626" />
+            <span>Score</span>
+            {score}
+          </div>
+        </Scores>
+      </Wrapper>
+    );
+  }
+}
 
 export default App;

@@ -8,6 +8,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    setBoard: board => {
+      dispatch(mainOperations.setBoard(board));
+    },
     touchBoard: (x, y, board, size, score, topScore) => {
       dispatch(mainOperations.touchBoard(x, y, board, size, score, topScore));
     },
