@@ -17,6 +17,7 @@ const mapDispatchToProps = dispatch => {
     changeSize: size => {
       dispatch(mainOperations.changeSize(size));
     },
+
     startGame: () => {
       dispatch(mainOperations.startGame());
     },
