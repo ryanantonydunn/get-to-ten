@@ -1,4 +1,4 @@
-# Make number on tile go big
+# Big tile number
 
 Make the tile number bigger by tapping same tiles that are adjacent.
 

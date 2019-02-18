@@ -1,9 +1,11 @@
 import { connect } from "react-redux";
 import App from "./App";
 import { mainOperations } from "./duck";
+import { isGameOver } from "../helpers";
 
 const mapStateToProps = state => {
-  return { ...state.main };
+  const gameOver = isGameOver(state.main.board);
+  return { ...state.main, gameOver };
 };
 
 const mapDispatchToProps = dispatch => {

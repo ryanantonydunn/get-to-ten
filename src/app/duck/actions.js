@@ -5,7 +5,7 @@ const { Creators, Types } = createActions({
   newGame: ["board"],
   openSettings: [],
   setBoard: ["board"],
-  touchAction: ["board", "score", "topScore", "gameOver"],
+  touchAction: ["board", "score", "topScore"],
   setSize: ["board", "score", "topScore", "size"]
 });
 

@@ -83,7 +83,7 @@ const touchBoard = (x, y, board, size, score, topScore) => {
     localStorage.setItem("board-" + size, JSON.stringify(saveBoard));
 
     // dispatch the new board
-    dispatch(touchAction(newBoard, newScore, newTopScore, gameOver));
+    dispatch(touchAction(newBoard, newScore, newTopScore));
   };
 };
 

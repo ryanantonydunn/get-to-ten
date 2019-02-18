@@ -6,7 +6,6 @@ const data = getStoredData(size);
 const INITIAL_STATE = {
   size,
   active: false,
-  gameOver: false,
   ...data
 };
 
@@ -23,8 +22,7 @@ const reducers = (state = INITIAL_STATE, action) => {
         ...state,
         board: action.board,
         score: 0,
-        active: true,
-        gameOver: false
+        active: true
       };
     }
     case "OPEN_SETTINGS": {
@@ -44,13 +42,13 @@ const reducers = (state = INITIAL_STATE, action) => {
         ...state,
         board: [...action.board],
         score: action.score,
-        topScore: action.topScore,
-        gameOver: action.gameOver
+        topScore: action.topScore
       };
     }
     case "SET_SIZE": {
       return {
         ...state,
+        active: false,
         board: [...action.board],
         score: action.score,
         topScore: action.topScore,

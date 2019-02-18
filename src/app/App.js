@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import styled, { keyframes } from "styled-components";
+import Swipe from "react-easy-swipe";
 
 const Wrapper = styled.div`
   --block: 4px;
@@ -28,10 +29,19 @@ const Bg = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 16px;
-  padding: 20px 0 20px;
+  font-size: 14px;
+  padding: 20px 0 10px;
   color: #fff;
   text-shadow: 0 3px 0 #000;
+`;
+
+const Description = styled.div`
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  padding: 0 0 11px;
+  line-height: 1.2;
+  text-transform: none;
+  color: #999;
 `;
 
 const Scores = styled.div`
@@ -61,6 +71,7 @@ const Buttons = styled.div`
     margin: 0 4px;
     font-size: 12px;
     cursor: pointer;
+    width: 130px;
   }
 `;
 
@@ -142,18 +153,19 @@ const Options = styled.div`
   display: grid;
   place-content: center;
   font-size: 18px;
-  span {
+  & > span {
     color: #888;
     font-size: 12px;
   }
   &.fade {
-    animation: ${fadeIn} 0.7s ease-in forwards;
+    opacity: 0;
+    animation: ${fadeIn} 0.7s ease-in 1s forwards;
   }
 `;
 
 const Arrow = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   position: absolute;
   top: calc(50% - 30px);
   cursor: POINTER;
@@ -161,8 +173,8 @@ const Arrow = styled.div`
   &:after {
     content: "";
     position: absolute;
-    left: 25px;
-    top: 25px;
+    left: 15px;
+    top: 15px;
     width: 30px;
     height: 8px;
     background: #ddd;
@@ -184,16 +196,26 @@ const Arrow = styled.div`
 const BigButton = styled.div`
   position: relative;
   z-index: 20;
-  font-size: 20px;
   padding: 24px 38px 20px;
   margin-top: 20px;
   color: #000;
   cursor: pointer;
+  .small {
+    font-size: 14px;
+    line-height: 26px;
+  }
+  .large {
+    font-size: 20px;
+    line-height: 26px;
+  }
 `;
 
-const Large = styled.div`
-  font-size: 24px;
-  margin-bottom: 20px;
+const TopMessage = styled.div`
+  position: absolute;
+  width: 100%;
+  top: 40px;
+  left: 0;
+  font-size: 20px;
 `;
 
 let interval;
@@ -217,6 +239,16 @@ class App extends Component {
     }, 1000 / 30);
   }
 
+  sizeBigger = () => {
+    const { size, changeSize } = this.props;
+    changeSize(size <= 3 ? 6 : size - 1);
+  };
+
+  sizeSmaller = () => {
+    const { size, changeSize } = this.props;
+    changeSize(size >= 6 ? 3 : size + 1);
+  };
+
   render() {
     const {
       size,
@@ -226,7 +258,6 @@ class App extends Component {
       active,
       gameOver,
       touchBoard,
-      changeSize,
       startGame,
       startNewGame,
       openSettings
@@ -234,20 +265,10 @@ class App extends Component {
     return (
       <Wrapper>
         <Title>big tile number</Title>
-        <Buttons>
-          <div onClick={openSettings}>
-            <Bg col="#444" />
-            Options
-          </div>
-          <div
-            onClick={() => {
-              startNewGame(size);
-            }}
-          >
-            <Bg col="#444" />
-            New Game
-          </div>
-        </Buttons>
+        <Description>
+          Tap tiles with the same number next to each other to get a bigger
+          number
+        </Description>
         <Board>
           <Bg col="#000" />
           <BoardInner
@@ -273,7 +294,9 @@ class App extends Component {
                     }}
                   >
                     <Bg
-                      offset={size > 5 ? "2px" : "4px"}
+                      offset={
+                        size > 5 ? "calc(var(--block) / 2)" : "var(--block)"
+                      }
                       col={cols[Math.min(cell.value, cols.length - 1)]}
                     />
                     {cell.value}
@@ -282,44 +305,37 @@ class App extends Component {
               </Col>
             ))}
           </BoardInner>
-          {gameOver && active ? (
-            <Options className="fade">
-              <Bg col="#000" opacity="0.8" />
-              <div>
-                Game Over
-                <BigButton
-                  onClick={() => {
-                    startNewGame(size);
-                  }}
-                >
-                  <Bg col="#eee" /> Try Again
-                </BigButton>
-              </div>
-            </Options>
-          ) : null}
-          {!active ? (
-            <Options>
-              <Bg col="#000" opacity="0.8" />
-              <Arrow
-                className="left"
-                onClick={() => {
-                  changeSize(size <= 3 ? 6 : size - 1);
-                }}
-              />
-              <Arrow
-                className="right"
-                onClick={() => {
-                  changeSize(size >= 6 ? 3 : size + 1);
-                }}
-              />
-              <div>
-                {gameOver ? <Large>Game Over</Large> : null}
-                {size} <span>x</span> {size}
-                <BigButton onClick={startGame}>
-                  <Bg col="#eee" /> {gameOver ? "Try Again" : "Play"}
-                </BigButton>
-              </div>
-            </Options>
+          {!active || gameOver ? (
+            <Swipe
+              onSwipeLeft={this.sizeSmaller}
+              onSwipeRight={this.sizeBigger}
+            >
+              <Options className={gameOver && active ? "fade" : ""}>
+                <Bg col="#000" opacity="0.8" />
+                <Arrow className="left" onClick={this.sizeBigger} />
+                <Arrow className="right" onClick={this.sizeSmaller} />
+                <div>
+                  {gameOver ? <TopMessage>Game Over</TopMessage> : null}
+                  {size} <span>x</span> {size}
+                  <BigButton
+                    onClick={() => {
+                      if (gameOver) {
+                        startNewGame(size);
+                      } else {
+                        startGame();
+                      }
+                    }}
+                  >
+                    <Bg col="#eee" />{" "}
+                    {gameOver ? (
+                      <span className="small">Try Again</span>
+                    ) : (
+                      <span className="large">Play</span>
+                    )}
+                  </BigButton>
+                </div>
+              </Options>
+            </Swipe>
           ) : null}
         </Board>
         <Scores>
@@ -334,6 +350,20 @@ class App extends Component {
             {score}
           </div>
         </Scores>
+        <Buttons>
+          <div onClick={openSettings}>
+            <Bg col="#444" />
+            Options
+          </div>
+          <div
+            onClick={() => {
+              startNewGame(size);
+            }}
+          >
+            <Bg col="#444" />
+            New Game
+          </div>
+        </Buttons>
       </Wrapper>
     );
   }

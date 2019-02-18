@@ -2,12 +2,15 @@
   "name": "big-tile-number",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
+  "homepage": "http://ryanantonydunn.github.io/big-tile-number",
   "dependencies": {
+    "cordova-android": "^7.0.0",
+    "cordova-plugin-whitelist": "1",
     "node-sass": "^4.11.0",
     "random-js": "^1.0.8",
     "react": "^16.8.1",
     "react-dom": "^16.5.2",
+    "react-easy-swipe": "0.0.17",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.4",
@@ -16,7 +19,9 @@
     "reduxsauce": "^1.0.0"
   },
   "scripts": {
-    "build:cordova": "npm run build && mkdir -p ./www && rm -r ./www/* && cp -a ./build/. ./www/",
+    "cordova:build": "npm run build && mkdir -p ./www && rm -r ./www/* && cp -a ./build/. ./www/",
+    "cordova:icons": "npx cordova-icon --icon='src/assets/icon.png' && npx cordova-splash --splash='src/assets/splash.png'",
+    "deploy:github": "npm run build && gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "move": "mv build www || move build www",
@@ -27,9 +32,12 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "cordova-icon": "^1.0.0",
+    "cordova-splash": "^1.0.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-react": "^7.11.1",
+    "gh-pages": "^2.0.1",
     "prettier": "^1.14.3",
     "styled-components": "^3.4.10"
   },
