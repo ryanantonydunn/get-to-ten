@@ -94,9 +94,10 @@ const cols = [
 
 const Board = styled.div`
   position: relative;
+  width: 85%;
+  margin: 0 auto 8px;
   height: 0;
-  padding-top: 100%;
-  margin-bottom: 8px;
+  padding-top: 85%;
   overflow: hidden;
 `;
 
@@ -159,7 +160,7 @@ const Options = styled.div`
   }
   &.fade {
     opacity: 0;
-    animation: ${fadeIn} 0.7s ease-in 1s forwards;
+    animation: ${fadeIn} 0.7s ease-in ${props => props.delay || "1s"} forwards;
   }
 `;
 
@@ -168,7 +169,7 @@ const Arrow = styled.div`
   height: 60px;
   position: absolute;
   top: calc(50% - 30px);
-  cursor: POINTER;
+  cursor: pointer;
   &:before,
   &:after {
     content: "";
@@ -256,6 +257,8 @@ class App extends Component {
       score,
       topScore,
       active,
+      won,
+      carryOn,
       gameOver,
       touchBoard,
       startGame,
@@ -264,10 +267,9 @@ class App extends Component {
     } = this.props;
     return (
       <Wrapper>
-        <Title>big tile number</Title>
+        <Title>Get to ten</Title>
         <Description>
-          Tap tiles with the same number next to each other to get a bigger
-          number
+          Tap adjecent tiles with the same number to get a bigger number
         </Description>
         <Board>
           <Bg col="#000" />
@@ -305,7 +307,19 @@ class App extends Component {
               </Col>
             ))}
           </BoardInner>
-          {!active || gameOver ? (
+          {won ? (
+            <Options className="fade" delay="0s">
+              <Bg col="#000" opacity="0.8" />
+              <div>
+                You Win!
+                <BigButton onClick={carryOn}>
+                  <Bg col="#eee" />
+                  Carry On
+                </BigButton>
+              </div>
+            </Options>
+          ) : null}
+          {(!active || gameOver) && !won ? (
             <Swipe
               onSwipeLeft={this.sizeSmaller}
               onSwipeRight={this.sizeBigger}
@@ -326,7 +340,7 @@ class App extends Component {
                       }
                     }}
                   >
-                    <Bg col="#eee" />{" "}
+                    <Bg col="#eee" />
                     {gameOver ? (
                       <span className="small">Try Again</span>
                     ) : (

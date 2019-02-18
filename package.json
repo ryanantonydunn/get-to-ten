@@ -1,8 +1,8 @@
 {
-  "name": "big-tile-number",
+  "name": "get-to_ten",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://ryanantonydunn.github.io/big-tile-number",
+  "homepage": "http://ryanantonydunn.github.io/get-to_ten",
   "dependencies": {
     "cordova-android": "^7.0.0",
     "cordova-plugin-whitelist": "1",

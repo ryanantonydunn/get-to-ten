@@ -3,7 +3,7 @@ import touchBoard from "./touchBoard";
 import changeSize from "./changeSize";
 import startNewGame from "./startNewGame";
 
-const { setBoard, startGame, openSettings } = Creators;
+const { setBoard, startGame, openSettings, carryOn } = Creators;
 
 export default {
   setBoard,
@@ -11,5 +11,6 @@ export default {
   changeSize,
   startNewGame,
   startGame,
-  openSettings
+  openSettings,
+  carryOn
 };

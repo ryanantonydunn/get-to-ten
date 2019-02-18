@@ -10,6 +10,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    carryOn: () => {
+      dispatch(mainOperations.carryOn());
+    },
     setBoard: board => {
       dispatch(mainOperations.setBoard(board));
     },
@@ -19,7 +22,6 @@ const mapDispatchToProps = dispatch => {
     changeSize: size => {
       dispatch(mainOperations.changeSize(size));
     },
-
     startGame: () => {
       dispatch(mainOperations.startGame());
     },

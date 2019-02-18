@@ -50,12 +50,18 @@ const touchBoard = (x, y, board, size, score, topScore) => {
     // prep the new board with offsets on new cells
     const newBoard = JSON.parse(JSON.stringify(board));
     newBoard[x][y].value += 1;
-    newBoard.forEach((col, x) => {
+    const areWeHittingTen = newBoard[x][y].value === 10;
+    let didWeHitTenAlready = false;
+    newBoard.forEach((col, x1) => {
       const newCol = [...col];
       let newCells = 0;
-      for (let y = col.length - 1; y >= 0; y--) {
-        if (removeCells[x + "-" + y]) {
-          newCol.splice(y, 1);
+      for (let y1 = col.length - 1; y1 >= 0; y1--) {
+        const notTheSameCell = !(x1 === x && y1 === y);
+        if (notTheSameCell && newBoard[x1][y1].value >= 10) {
+          didWeHitTenAlready = true;
+        }
+        if (removeCells[x1 + "-" + y1]) {
+          newCol.splice(y1, 1);
           newCells++;
         }
       }
@@ -64,11 +70,14 @@ const touchBoard = (x, y, board, size, score, topScore) => {
         yOffset = Math.max(yOffset, size);
         newCol.unshift({ value: Random.integer(1, max), yOffset });
       }
-      newBoard[x] = newCol;
+      newBoard[x1] = newCol;
     });
 
     // are we game overed
     let gameOver = isGameOver(newBoard);
+
+    // did we just win
+    const won = areWeHittingTen && !didWeHitTenAlready;
 
     // set score
     const newScore = parseInt(score) + scoreAdd * newBoard[x][y].value;
@@ -83,7 +92,7 @@ const touchBoard = (x, y, board, size, score, topScore) => {
     localStorage.setItem("board-" + size, JSON.stringify(saveBoard));
 
     // dispatch the new board
-    dispatch(touchAction(newBoard, newScore, newTopScore));
+    dispatch(touchAction(newBoard, newScore, newTopScore, won));
   };
 };
 

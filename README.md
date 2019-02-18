@@ -1,5 +1,5 @@
-# Big tile number
+# Get to ten
 
-Make the tile number bigger by tapping same tiles that are adjacent.
+Tap adjecent tiles with the same number to get a bigger number, try to get to ten.
 
 Game made with JS, React and Cordova.
