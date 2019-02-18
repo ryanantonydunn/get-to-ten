@@ -19,9 +19,9 @@
     "reduxsauce": "^1.0.0"
   },
   "scripts": {
-    "cordova:build": "npm run build && mkdir -p ./www && rm -r ./www/* && cp -a ./build/. ./www/",
     "cordova:icons": "npx cordova-icon --icon='src/assets/icon.png' && npx cordova-splash --splash='src/assets/splash.png'",
-    "predeploy": "npm run build && mkdir -p ./docs && rm -r ./docs/* && cp -a ./build/. ./docs/",
+    "cordova:build": "npm run build && mkdir -p ./www && rm -f -r ./www/* && cp -a ./build/. ./www/",
+    "predeploy": "npm run build && mkdir -p ./docs && rm -f -r ./docs/* && cp -a ./build/. ./docs/",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
