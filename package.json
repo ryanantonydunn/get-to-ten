@@ -21,7 +21,10 @@
   "scripts": {
     "cordova:build": "npm run build && mkdir -p ./www && rm -r ./www/* && cp -a ./build/. ./www/",
     "cordova:icons": "npx cordova-icon --icon='src/assets/icon.png' && npx cordova-splash --splash='src/assets/splash.png'",
-    "deploy:github": "npm run build && gh-pages -d build",
+    "deploy:prepare": "chmod +x deploy.sh",
+    "deploy:script": "GIT_DEPLOY_DIR=./build GIT_DEPLOY_BRANCH=gh-pages GIT_DEPLOY_REPO=get-to-ten ./deploy.sh",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "move": "mv build www || move build www",
