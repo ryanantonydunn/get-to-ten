@@ -197,7 +197,7 @@ const Arrow = styled.div`
 const BigButton = styled.div`
   position: relative;
   z-index: 20;
-  padding: 24px 38px 20px;
+  padding: 18px 18px 14px;
   margin-top: 20px;
   color: #000;
   cursor: pointer;
@@ -321,8 +321,8 @@ class App extends Component {
           ) : null}
           {(!active || gameOver) && !won ? (
             <Swipe
-              onSwipeLeft={this.sizeSmaller}
-              onSwipeRight={this.sizeBigger}
+              onSwipeLeft={this.sizeBigger}
+              onSwipeRight={this.sizeSmaller}
             >
               <Options className={gameOver && active ? "fade" : ""}>
                 <Bg col="#000" opacity="0.8" />

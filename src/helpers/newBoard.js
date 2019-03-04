@@ -2,14 +2,15 @@ import isGameOver from "./isGameOver";
 const Random = require("random-js")();
 
 const newBoard = size => {
-  const max = size < 4 ? 2 : size > 5 ? 4 : 3;
+  const newNumMax = size < 4 ? 4 : size > 5 ? 4 : 3;
+  const newNumMin = size < 4 ? 3 : 1;
   const board = [];
   for (let x = 0; x < size; x++) {
     board[x] = [];
     for (let y = 0; y < size; y++) {
       board[x].push({
         yOffset: size - y - 1,
-        value: Random.integer(1, max)
+        value: Random.integer(newNumMin, newNumMax)
       });
     }
   }

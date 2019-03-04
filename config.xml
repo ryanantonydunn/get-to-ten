@@ -2,9 +2,9 @@
 <widget id="com.ryanantonydunn.gettoten" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Get To Ten</name>
     <description>
-        Tap adjecent tiles with the same number to get a bigger number, try to get to ten.
+        Tap adjacent tiles with the same number to get a bigger number, try to get to ten.
     </description>
-    <author email="ryanantonydunn@gmail.com" href="http://bigtilenumber.com">
+    <author email="ryanantonydunn@gmail.com" href="https://ryanantonydunn.github.io/get-to-ten">
         Ryan Dunn
     </author>
     <content src="index.html" />
@@ -26,5 +26,8 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <engine name="ios" />
+    <plugin name="cordova-plugin-admobpro" spec="^2.37.2">
+        <variable name="PLAY_SERVICES_VERSION" value="16.0.0" />
+    </plugin>
     <engine name="android" spec="^7.0.0" />
 </widget>

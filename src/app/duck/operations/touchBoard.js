@@ -7,7 +7,8 @@ const { touchAction } = Creators;
 // player has touched the board
 const touchBoard = (x, y, board, size, score, topScore) => {
   return dispatch => {
-    const max = size < 4 ? 2 : size > 5 ? 4 : 3;
+    const newNumMax = size < 4 ? 4 : size > 5 ? 4 : 3;
+    const newNumMin = size < 4 ? 3 : 1;
     const value = board[x][y].value;
     const checkedCells = { [x + "-" + y]: true };
     const removeCells = {};
@@ -68,7 +69,10 @@ const touchBoard = (x, y, board, size, score, topScore) => {
       for (let i = 0; i < newCells; i++) {
         let yOffset = newCol[0] ? newCol[0].yOffset + 1 : 0;
         yOffset = Math.max(yOffset, size);
-        newCol.unshift({ value: Random.integer(1, max), yOffset });
+        newCol.unshift({
+          value: Random.integer(newNumMin, newNumMax),
+          yOffset
+        });
       }
       newBoard[x1] = newCol;
     });

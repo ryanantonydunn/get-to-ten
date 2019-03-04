@@ -8,5 +8,21 @@
   </head>
   <body>
     <div id="root"></div>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script>
+    function initApp() {
+      if (!AdMob) {
+        alert("admob plugin not ready");
+        return;
+      }
+      AdMob.createBanner({
+        adId: "ca-app-pub-1042377063289142/5581339798",
+        position: AdMob.AD_POSITION.BOTTOM_CENTER,
+        // isTesting: true
+        autoShow: true
+      });
+    }
+    document.addEventListener("deviceready", initApp, false);
+    </script>
   </body>
 </html>

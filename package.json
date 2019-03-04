@@ -1,10 +1,12 @@
 {
   "name": "get-to_ten",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
   "homepage": "http://ryanantonydunn.github.io/get-to-ten",
   "dependencies": {
+    "cordova-admobsdk": "^7.37.0",
     "cordova-android": "^7.0.0",
+    "cordova-plugin-admobpro": "^2.37.2",
+    "cordova-plugin-extension": "^1.5.4",
     "cordova-plugin-whitelist": "1",
     "node-sass": "^4.11.0",
     "random-js": "^1.0.8",
@@ -20,7 +22,7 @@
   },
   "scripts": {
     "cordova:icons": "npx cordova-icon --icon='src/assets/icon.png' && npx cordova-splash --splash='src/assets/splash.png'",
-    "cordova:build": "npm run build && mkdir -p ./www && rm -f -r ./www/* && cp -a ./build/. ./www/",
+    "cordova:build": "PUBLIC_URL=./ npm run build && mkdir -p ./www && rm -f -r ./www/* && cp -a ./build/. ./www/",
     "predeploy": "npm run build && mkdir -p ./docs && rm -f -r ./docs/* && cp -a ./build/. ./docs/",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
@@ -44,7 +46,10 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-whitelist": {}
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-admobpro": {
+        "PLAY_SERVICES_VERSION": "16.0.0"
+      }
     },
     "platforms": [
       "ios",
